@@ -1,6 +1,6 @@
 {
     "name": "auto-fontsize",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Auto resize font to fit the parent container width",
     "main": "./lib/index.js",
     "scripts": {
@@ -9,6 +9,11 @@
     },
     "author": "acatdev@outlook.com",
     "license": "MIT",
+    "keywords": [
+        "react",
+        "font size",
+        "auto font size"
+    ],
     "dependencies": {
         "line-height": "^0.3.1"
     },
