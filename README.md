@@ -4,8 +4,19 @@ This React component is used for limit text in the certain line(s) by shrink the
 
 ## Install 
 
-`npm i auto-fontsize'
+`npm i auto-fontsize --save`
 
-## Use
+## Usage
 
-### With TypesScript
+`import {AutoFontSize} from 'auto-fontsize`
+
+```
+<AutoFontSize
+            text="The quick brown fox jumps over the lazy dog"
+            minTextSize={16}
+            textSize={28}
+            textSizeStep={2}
+            targetLines={1}
+        />
+```
+
