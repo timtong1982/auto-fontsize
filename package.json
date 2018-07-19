@@ -1,0 +1,33 @@
+{
+    "name": "auto-fontsize",
+    "version": "1.0.0",
+    "description": "Auto resize font to fit the parent container width",
+    "main": "index.js",
+    "scripts": {
+        "dev": "webpack-dev-server --hotOnly"
+    },
+    "author": "acatdev@outlook.com",
+    "license": "MIT",
+    "dependencies": {
+        "line-height": "^0.3.1"
+    },
+    "devDependencies": {
+        "@types/react": "^16.4.6",
+        "@types/react-dom": "^16.0.6",
+        "@types/typescript": "^2.0.0",
+        "@types/webpack-env": "^1.13.6",
+        "awesome-typescript-loader": "^5.2.0",
+        "html-webpack-plugin": "^3.2.0",
+        "react": "^16.4.1",
+        "react-dom": "^16.4.1",
+        "source-map-loader": "^0.2.3",
+        "typescript": "^2.9.2",
+        "webpack": "^4.16.1",
+        "webpack-cli": "^3.1.0",
+        "webpack-dev-server": "^3.1.4"
+    },
+    "peerDependencies": {
+        "react": ">=15.0.0",
+        "react-dom": ">=15.0.0"
+    }
+}
