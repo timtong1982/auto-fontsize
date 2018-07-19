@@ -58,7 +58,7 @@ class AutoFontSize extends React.Component<
     public componentDidUpdate() {
         const container = this._getContainer();
         if (container) {
-            const { targetLines, textSize, textSizeStep } = this.props;
+            const { targetLines, textSize, textSizeStep, minTextSize } = this.props;
 
             // Get line height data since container width is now fixed
             const lineHeight = lineHeightFunc(container);
@@ -68,10 +68,11 @@ class AutoFontSize extends React.Component<
             if (currentTextLines > targetLines) {
                 // Need shrink font size
                 const { currentTextSize } = this.state;
-                const ratio =  targetLines / currentTextLines;
+                const ratio = targetLines / currentTextLines;
                 const calcTextSize = Math.floor(currentTextSize * ratio);
-                const step =Math.ceil ((textSize - calcTextSize) %textSizeStep);
-                this.setState({ currentTextSize: calcTextSize - step });
+                const stepAdjust = Math.ceil((textSize - calcTextSize) % textSizeStep);
+                const finalTextSize = calcTextSize - stepAdjust;
+                this.setState({ currentTextSize: finalTextSize >= minTextSize ? finalTextSize : minTextSize });
             }
         }
     }
