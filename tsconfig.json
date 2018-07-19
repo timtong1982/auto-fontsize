@@ -6,7 +6,10 @@
         "target": "es5",
         "jsx": "react",
         "lib": ["es2017", "dom"],
-        "noLib": false
+        "noLib": false,
+        "outDir": "lib",
+        "removeComments": true,
+        "declaration": true
     },
     "include": ["./src/**/*"]
 }

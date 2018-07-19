@@ -6,7 +6,7 @@ const distFolder = 'dist';
 
 module.exports = {
     mode: 'development',
-    entry: { demo: './src/demo/bootstrap.tsx' },
+    entry: { demo: './demo/bootstrap.tsx' },
     output: {
         path: path.resolve(__dirname, distFolder),
         filename: 'autofontsize.js',

@@ -1,6 +1,6 @@
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
-import { AutoFontSize } from '../AutoFontSize';
+import { AutoFontSize } from '../src/AutoFontSize'
 
 const renderComponent = () => {
     console.log('rendering...');
@@ -19,5 +19,5 @@ const renderComponent = () => {
 renderComponent();
 
 if (module.hot) {
-    module.hot.accept('../AutoFontSize.tsx', () => renderComponent());
+    module.hot.accept('../src//AutoFontSize.tsx', () => renderComponent());
 }
