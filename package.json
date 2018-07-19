@@ -9,6 +9,11 @@
     },
     "author": "acatdev@outlook.com",
     "license": "MIT",
+    "keywords": [
+        "react",
+        "font size",
+        "auto font size"
+    ],
     "dependencies": {
         "line-height": "^0.3.1"
     },

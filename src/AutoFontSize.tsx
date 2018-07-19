@@ -21,9 +21,9 @@ class AutoFontSize extends React.Component<
     IAutoFontSizeStates
     > {
     public static defaultProps: Partial<IAutoFontSizeProps> = {
-        minTextSize: 8,
         textSizeStep: 2,
-        targetLines: 1
+        targetLines: 1,
+        minTextSize: 2
     };
 
     private textContainer: HTMLParagraphElement | null = null;
@@ -64,13 +64,13 @@ class AutoFontSize extends React.Component<
             const lineHeight = lineHeightFunc(container);
             const containerHeight = container.clientHeight;
             const currentTextLines = containerHeight / lineHeight;
-
-            if (currentTextLines > targetLines) {
+            const { currentTextSize } = this.state;
+            if (currentTextLines > targetLines &&
+                currentTextSize > minTextSize) {
                 // Need shrink font size
-                const { currentTextSize } = this.state;
                 const ratio = targetLines / currentTextLines;
-                const calcTextSize = Math.floor(currentTextSize * ratio);
-                const stepAdjust = Math.ceil((textSize - calcTextSize) % textSizeStep);
+                const calcTextSize = Math.ceil(currentTextSize * ratio);
+                const stepAdjust = Math.floor((textSize - calcTextSize) % textSizeStep);
                 const finalTextSize = calcTextSize - stepAdjust;
                 this.setState({ currentTextSize: finalTextSize >= minTextSize ? finalTextSize : minTextSize });
             }
