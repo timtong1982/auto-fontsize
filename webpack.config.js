@@ -9,8 +9,8 @@ module.exports = {
     entry: { demo: './src/demo/bootstrap.tsx' },
     output: {
         path: path.resolve(__dirname, distFolder),
-        filename: 'dynamictext.js',
-        library: 'DynamicText',
+        filename: 'autofontsize.js',
+        library: 'AutoFontSize',
         libraryTarget: 'umd'
     },
     devtool: 'source-map',

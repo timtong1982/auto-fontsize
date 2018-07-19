@@ -6,11 +6,11 @@ const renderComponent = () => {
     console.log('rendering...');
     ReactDOM.render(
         <AutoFontSize
-            text="long text, long text long text long text, long text long text 1234f"
+            text="The quick brown fox jumps over the lazy dog"
             minTextSize={16}
             textSize={28}
-            textSizeStep={4}
-            targetLines={2}
+            textSizeStep={2}
+            targetLines={1}
         />,
         document.getElementById('mounthere')
     );
