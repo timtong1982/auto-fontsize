@@ -4,12 +4,17 @@
     "description": "Auto resize font to fit the parent container width",
     "main": "index.js",
     "scripts": {
-        "dev": "webpack-dev-server --hotOnly"
+        "dev": "webpack-dev-server --hotOnly",
+        "build": "tsc"
     },
     "author": "acatdev@outlook.com",
     "license": "MIT",
     "dependencies": {
         "line-height": "^0.3.1"
+    },
+    "repository": {
+        "type": "git",
+        "url":"https://github.com/timtong1982/auto-fontsize"
     },
     "devDependencies": {
         "@types/react": "^16.4.6",
