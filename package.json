@@ -2,7 +2,7 @@
     "name": "auto-fontsize",
     "version": "1.0.0",
     "description": "Auto resize font to fit the parent container width",
-    "main": "index.js",
+    "main": "./lib/index.js",
     "scripts": {
         "dev": "webpack-dev-server --hotOnly",
         "build": "tsc"
@@ -14,7 +14,7 @@
     },
     "repository": {
         "type": "git",
-        "url":"https://github.com/timtong1982/auto-fontsize"
+        "url": "https://github.com/timtong1982/auto-fontsize"
     },
     "devDependencies": {
         "@types/react": "^16.4.6",
