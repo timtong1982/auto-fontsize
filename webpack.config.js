@@ -44,7 +44,7 @@ module.exports = {
     plugins: [
         new webPack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
-            template: './test/template.html'
+            template: './demo/template.html'
         })
     ]
 };
