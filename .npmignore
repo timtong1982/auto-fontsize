@@ -1,0 +1,6 @@
+demo/
+node_modules/
+src/
+.gitignore
+.tsconfig.json
+webpackconfig.js
