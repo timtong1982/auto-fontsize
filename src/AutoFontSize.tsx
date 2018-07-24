@@ -5,8 +5,8 @@ const lineHeightFunc = require('line-height');
 
 interface IAutoFontSizeProps {
     text: string;
-    minTextSize?: number;
     textSize: number;
+    minTextSize?: number;
     textSizeStep?: number;
     targetLines?: number;
 }
@@ -63,7 +63,7 @@ class AutoFontSize extends React.Component<
             // Get line height data since container width is now fixed
             const lineHeight = lineHeightFunc(container);
             const containerHeight = container.clientHeight;
-            const currentTextLines = containerHeight / lineHeight;
+            const currentTextLines = Math.floor(containerHeight / lineHeight);
             const { currentTextSize } = this.state;
             if (currentTextLines > targetLines &&
                 currentTextSize > minTextSize) {
