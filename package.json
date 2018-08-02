@@ -7,7 +7,8 @@
     "scripts": {
         "dev": "webpack-dev-server --hotOnly",
         "build": "tsc",
-        "test": "tsc"
+        "test": "jest",
+        "update-snapshot": "jest --updateSnapshot"
     },
     "author": "acatdev@outlook.com",
     "license": "MIT",
@@ -16,6 +17,22 @@
         "font size",
         "auto font size"
     ],
+    "jest": {
+        "transform": {
+            "^.+\\.tsx?$": "ts-jest"
+        },
+        "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+        "moduleFileExtensions": [
+            "ts",
+            "tsx",
+            "js",
+            "jsx",
+            "json",
+            "node"
+        ],
+        "verbose": true,
+        "testURL": "http://localhost/"
+    },
     "dependencies": {
         "convert-css-length": "^1.0.2",
         "line-height": "^0.3.1"
@@ -25,15 +42,20 @@
         "url": "https://github.com/timtong1982/auto-fontsize"
     },
     "devDependencies": {
+        "@types/jest": "^23.3.1",
         "@types/react": "^16.4.6",
         "@types/react-dom": "^16.0.6",
+        "@types/react-test-renderer": "^16.0.1",
         "@types/typescript": "^2.0.0",
         "@types/webpack-env": "^1.13.6",
         "awesome-typescript-loader": "^5.2.0",
         "html-webpack-plugin": "^3.2.0",
+        "jest": "^23.4.2",
         "react": "^16.4.1",
         "react-dom": "^16.4.1",
+        "react-test-renderer": "^16.4.2",
         "source-map-loader": "^0.2.3",
+        "ts-jest": "^23.0.1",
         "typescript": "^2.9.2",
         "webpack": "^4.16.1",
         "webpack-cli": "^3.1.0",
