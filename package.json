@@ -6,7 +6,8 @@
     "types": "./lib/index.d.ts",
     "scripts": {
         "dev": "webpack-dev-server --hotOnly",
-        "build": "tsc"
+        "build": "tsc",
+        "test": "tsc"
     },
     "author": "acatdev@outlook.com",
     "license": "MIT",
