@@ -1,6 +1,6 @@
 {
     "name": "auto-fontsize",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Auto resize font to fit the parent container width",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
@@ -16,6 +16,7 @@
         "auto font size"
     ],
     "dependencies": {
+        "convert-css-length": "^1.0.2",
         "line-height": "^0.3.1"
     },
     "repository": {

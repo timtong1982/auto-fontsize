@@ -2,16 +2,19 @@ import * as React from 'react';
 import { findDOMNode } from 'react-dom';
 
 const lineHeightFunc = require('line-height');
+const convertLength = require('convert-css-length');
+const cssLenConverter = convertLength();
 
 interface IAutoFontSizeProps {
     text: string;
-    textSize: number;
+    textSize?: number;
     minTextSize?: number;
     textSizeStep?: number;
     targetLines?: number;
 }
 
 interface IAutoFontSizeStates {
+    parentTextSize: number;
     currentTextSize: number;
     currentParentWidth: number;
 }
@@ -23,7 +26,7 @@ class AutoFontSize extends React.Component<
     public static defaultProps: Partial<IAutoFontSizeProps> = {
         textSizeStep: 2,
         targetLines: 1,
-        minTextSize: 2
+        minTextSize: 2,
     };
 
     private textContainer: HTMLParagraphElement | null = null;
@@ -32,7 +35,8 @@ class AutoFontSize extends React.Component<
         super(props);
         this.state = {
             currentTextSize: props.textSize,
-            currentParentWidth: 0
+            currentParentWidth: 0,
+            parentTextSize: 0
         };
     }
 
@@ -60,6 +64,10 @@ class AutoFontSize extends React.Component<
         if (container) {
             const { targetLines, textSize, textSizeStep, minTextSize } = this.props;
 
+            let textSizeCalc = textSize;
+            if (!textSize) {
+                textSizeCalc = this.state.parentTextSize;
+            }
             // Get line height data since container width is now fixed
             const lineHeight = lineHeightFunc(container);
             const containerHeight = container.clientHeight;
@@ -70,7 +78,7 @@ class AutoFontSize extends React.Component<
                 // Need shrink font size
                 const ratio = targetLines / currentTextLines;
                 const calcTextSize = Math.ceil(currentTextSize * ratio);
-                const stepAdjust = Math.floor((textSize - calcTextSize) % textSizeStep);
+                const stepAdjust = Math.floor((textSizeCalc - calcTextSize) % textSizeStep);
                 const finalTextSize = calcTextSize - stepAdjust;
                 this.setState({ currentTextSize: finalTextSize >= minTextSize ? finalTextSize : minTextSize });
             }
@@ -84,6 +92,12 @@ class AutoFontSize extends React.Component<
             const containerParent = container.parentElement;
             if (containerParent) {
                 const parentWidth = containerParent.clientWidth;
+                if (!this.props.textSize) {
+                    const styles = window.getComputedStyle(containerParent);
+                    const fontSize = cssLenConverter(styles.fontSize, 'px') as string;
+                    const fontSizeNumber = parseInt(fontSize.substring(0, fontSize.indexOf('px')));
+                    this.setState({ currentTextSize: fontSizeNumber, parentTextSize: fontSizeNumber });
+                }
                 this.setState({
                     currentParentWidth: parentWidth
                 });
