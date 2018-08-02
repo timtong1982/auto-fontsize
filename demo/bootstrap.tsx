@@ -7,7 +7,6 @@ const renderComponent = () => {
     ReactDOM.render(
         <AutoFontSize
             text="The quick brown fox jumps over the lazy dog"
-            textSize={28}
             textSizeStep={2}
             targetLines={1}
         />,

@@ -16,6 +16,7 @@
         "auto font size"
     ],
     "dependencies": {
+        "convert-css-length": "^1.0.2",
         "line-height": "^0.3.1"
     },
     "repository": {
