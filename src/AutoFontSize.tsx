@@ -16,7 +16,6 @@ interface IAutoFontSizeProps {
 interface IAutoFontSizeStates {
     parentTextSize: number;
     currentTextSize: number;
-    currentParentWidth: number;
 }
 
 class AutoFontSize extends React.Component<
@@ -35,7 +34,6 @@ class AutoFontSize extends React.Component<
         super(props);
         this.state = {
             currentTextSize: props.textSize,
-            currentParentWidth: 0,
             parentTextSize: 0
         };
     }
@@ -44,12 +42,11 @@ class AutoFontSize extends React.Component<
         const { text } = this.props;
         const {
             currentTextSize,
-            currentParentWidth
         } = this.state;
 
         const cacledStyle: React.CSSProperties = {
             fontSize: currentTextSize,
-            width: currentParentWidth
+            width: '100%'
         };
 
         return (
@@ -88,19 +85,14 @@ class AutoFontSize extends React.Component<
     public componentDidMount() {
         const container = this._getContainer();
         if (container) {
-            // set width data from parent
             const containerParent = container.parentElement;
             if (containerParent) {
-                const parentWidth = containerParent.clientWidth;
                 if (!this.props.textSize) {
                     const styles = window.getComputedStyle(containerParent);
                     const fontSize = cssLenConverter(styles.fontSize, 'px') as string;
                     const fontSizeNumber = parseInt(fontSize.substring(0, fontSize.indexOf('px')));
                     this.setState({ currentTextSize: fontSizeNumber, parentTextSize: fontSizeNumber });
                 }
-                this.setState({
-                    currentParentWidth: parentWidth
-                });
             }
         }
     }
