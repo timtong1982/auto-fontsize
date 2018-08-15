@@ -96,10 +96,12 @@ class AutoFontSize extends React.Component<
                     const fontSizeNumber = parseInt(fontSize.substring(0, fontSize.indexOf('px')));
                     this.setState({
                         currentTextSize: fontSizeNumber,
-                        parentTextSize: fontSizeNumber,
-                        elementWidth: '100%'
+                        parentTextSize: fontSizeNumber
                     });
                 }
+
+                // set the width to 100% to trigger an update
+                this.setState({ elementWidth: '100%' });
             }
         }
     }
