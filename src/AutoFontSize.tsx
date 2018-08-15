@@ -77,7 +77,11 @@ class AutoFontSize extends React.Component<
                 currentTextSize > minTextSize) {
                 // Need shrink font size
                 const ratio = targetLines / currentTextLines;
-                const calcTextSize = Math.ceil(currentTextSize * ratio);
+                let calcTextSize = Math.ceil(currentTextSize * ratio);
+                if (lineHeight < calcTextSize) {
+                    calcTextSize = lineHeight;
+                }
+
                 const stepAdjust = Math.floor((textSizeCalc - calcTextSize) % textSizeStep);
                 const finalTextSize = calcTextSize - stepAdjust;
                 this.setState({ currentTextSize: finalTextSize >= minTextSize ? finalTextSize : minTextSize });
