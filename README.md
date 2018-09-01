@@ -47,8 +47,11 @@ interface IFontSizeLineHeightMapping {
 ### Use defined step auto sizing
 
 ```
-     <AutoFontSize
-                text="The quick brown fox jumps over the lazy dog"
-                fontSizeMapping={[{ fontSize: 28, lineHeight: '31px' }, { fontSize: 16, lineHeight: '19px' }]}
+<AutoFontSize
+    text="The quick brown fox jumps over the lazy dog"
+     fontSizeMapping={[
+         { fontSize: 28, lineHeight: '31px' },
+         { fontSize: 16, lineHeight: '19px' }
+         ]}
             />
 ```
