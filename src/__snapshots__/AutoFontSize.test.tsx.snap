@@ -9,15 +9,16 @@ exports[`AutoFontSize renders basic example correctly 1`] = `
     }
   }
 >
-  <p
+  <div
     style={
       Object {
         "fontSize": undefined,
+        "lineHeight": 0,
         "width": 0,
       }
     }
   >
     test text
-  </p>
+  </div>
 </div>
 `;
