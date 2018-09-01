@@ -76,13 +76,14 @@ class AutoFontSize extends React.Component<
     public componentDidUpdate(): void {
         const container = this._getContainer();
         if (container) {
-            const { fontSizeMapping, targetLines, minTextSize } = this.props;
+            const { targetLines, minTextSize } = this.props;
             const { currentTextSize } = this.state;
 
             const lineHeight = lineHeightFunc(container);
             const containerHeight = container.clientHeight;
             const currentTextLines = Math.floor(containerHeight / lineHeight);
             if (currentTextLines > targetLines && currentTextLines > minTextSize) {
+                const { fontSizeMapping } = this.props;
                 // do auto sizing
                 if (fontSizeMapping && fontSizeMapping.length) {
                     // Using the mapping setting to set the font size steppings
@@ -100,8 +101,33 @@ class AutoFontSize extends React.Component<
                         if (settings && settings.length) {
                             this.setState({ currentTextSize: settings[0].fontSize, currentLineHeight: settings[0].lineHeight });
                         }
-
                     }
+                } else {
+                    // Full auto sizing
+                    if (!!!currentTextSize) {
+                        const { textSize, lineHeightRatio } = this.props;
+                        let fontSizeInNumber = textSize;
+                        if (!!!fontSizeInNumber) {
+                            // Get the text size from current container
+                            const containerFontSize = window.getComputedStyle(container).fontSize;
+                            fontSizeInNumber = parseInt(cssLenConverter(containerFontSize, 'px'));
+                            if (fontSizeInNumber < minTextSize) {
+                                fontSizeInNumber = minTextSize;
+                            }
+                        }
+
+                        this.setState({ currentTextSize: fontSizeInNumber, currentLineHeight: lineHeightRatio });
+                    } else {
+                        const { textSizeStep } = this.props;
+                        // Step setting the font size
+                        let nextFontSize = currentTextSize - textSizeStep;
+                        if (nextFontSize < minTextSize) {
+                            nextFontSize = minTextSize;
+                        }
+
+                        this.setState({ currentTextSize: nextFontSize });
+                    }
+
                 }
             }
         }
