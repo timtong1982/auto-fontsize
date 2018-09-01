@@ -5,17 +5,25 @@ const lineHeightFunc = require('line-height');
 const convertLength = require('convert-css-length');
 const cssLenConverter = convertLength();
 
+interface IFontSizeLineHeightMapping {
+    fontSize: number;
+    lineHeight: number | string | 'normal';
+}
+
 interface IAutoFontSizeProps {
     text: string;
+    fontSizeMapping?: IFontSizeLineHeightMapping[];
     textSize?: number;
     minTextSize?: number;
+    lineHeightRatio?: number | string | 'normal';
     textSizeStep?: number;
     targetLines?: number;
+    targetElementType?: 'div' | 'p' | 'span';
 }
 
 interface IAutoFontSizeStates {
-    parentTextSize: number;
     currentTextSize: number;
+    currentLineHeight: number | string | 'normal';
     elementWidth: number | string;
 }
 
@@ -27,92 +35,142 @@ class AutoFontSize extends React.Component<
         textSizeStep: 2,
         targetLines: 1,
         minTextSize: 2,
+        lineHeightRatio: 'normal',
+        targetElementType: 'div'
     };
 
-    private textContainer: HTMLParagraphElement | null = null;
+    private textContainer: HTMLElement | null = null;
 
     constructor(props: IAutoFontSizeProps) {
         super(props);
         this.state = {
             currentTextSize: props.textSize,
-            parentTextSize: 0,
+            currentLineHeight: 0,
             elementWidth: 0
         };
     }
 
     public render() {
-        const { text } = this.props;
+        const { text, targetElementType } = this.props;
         const {
             currentTextSize,
+            currentLineHeight,
             elementWidth
         } = this.state;
 
         const cacledStyle: React.CSSProperties = {
             fontSize: currentTextSize,
+            lineHeight: currentLineHeight,
             width: elementWidth
         };
 
+        const TargetWrapper = targetElementType;
+
         return (
-            <p ref={_ => (this.textContainer = _)} style={cacledStyle}>
+            <TargetWrapper ref={(_: HTMLElement) => (this.textContainer = _)} style={cacledStyle}>
                 {text}
-            </p>
+            </TargetWrapper>
         );
     }
 
-    public componentDidUpdate() {
+    public componentDidUpdate(): void {
         const container = this._getContainer();
         if (container) {
-            const { targetLines, textSize, textSizeStep, minTextSize } = this.props;
+            const { targetLines, minTextSize } = this.props;
+            const { currentTextSize } = this.state;
 
-            let textSizeCalc = textSize;
-            if (!textSize) {
-                textSizeCalc = this.state.parentTextSize;
-            }
-            // Get line height data since container width is now fixed
             const lineHeight = lineHeightFunc(container);
             const containerHeight = container.clientHeight;
             const currentTextLines = Math.floor(containerHeight / lineHeight);
-            const { currentTextSize } = this.state;
-            if (currentTextLines > targetLines &&
-                currentTextSize > minTextSize) {
-                // Need shrink font size
-                const ratio = targetLines / currentTextLines;
-                let calcTextSize = Math.ceil(currentTextSize * ratio);
-                if (lineHeight < calcTextSize) {
-                    calcTextSize = lineHeight;
-                }
+            if (currentTextLines > targetLines && currentTextLines > minTextSize) {
+                const { fontSizeMapping } = this.props;
+                // do auto sizing
+                if (fontSizeMapping && fontSizeMapping.length) {
+                    // Using the mapping setting to set the font size steppings
+                    // sort the mapping
+                    const sortedMapping = fontSizeMapping.sort((a: IFontSizeLineHeightMapping, b: IFontSizeLineHeightMapping) => b.fontSize - a.fontSize);
 
-                const stepAdjust = Math.floor((textSizeCalc - calcTextSize) % textSizeStep);
-                const finalTextSize = calcTextSize - stepAdjust;
-                this.setState({ currentTextSize: finalTextSize >= minTextSize ? finalTextSize : minTextSize });
+                    // search the next value to use
+                    if (!!!currentTextSize) {
+                        // First hit, use the max value from sorted mapping
+                        const setting = sortedMapping[0];
+                        this.setState({ currentTextSize: setting.fontSize, currentLineHeight: setting.lineHeight });
+                    } else {
+                        // find the next smaller value in fontSizeMapping
+                        const settings = sortedMapping.filter((_: IFontSizeLineHeightMapping) => _.fontSize < currentTextSize);
+                        if (settings && settings.length) {
+                            this.setState({ currentTextSize: settings[0].fontSize, currentLineHeight: settings[0].lineHeight });
+                        }
+                    }
+                } else {
+                    // Full auto sizing
+                    if (!!!currentTextSize) {
+                        const { textSize, lineHeightRatio } = this.props;
+                        let fontSizeInNumber = textSize;
+                        if (!!!fontSizeInNumber) {
+                            // Get the text size from current container
+                            const containerFontSize = window.getComputedStyle(container).fontSize;
+                            fontSizeInNumber = parseInt(cssLenConverter(containerFontSize, 'px'));
+                            if (fontSizeInNumber < minTextSize) {
+                                fontSizeInNumber = minTextSize;
+                            }
+                        }
+
+                        this.setState({ currentTextSize: fontSizeInNumber, currentLineHeight: lineHeightRatio });
+                    } else {
+                        const { textSizeStep } = this.props;
+                        // Step setting the font size
+                        let nextFontSize = currentTextSize - textSizeStep;
+                        if (nextFontSize < minTextSize) {
+                            nextFontSize = minTextSize;
+                        }
+
+                        this.setState({ currentTextSize: nextFontSize });
+                    }
+
+                }
             }
         }
+        // const container = this._getContainer();
+        // if (container) {
+        //     const { targetLines, textSize, textSizeStep, minTextSize } = this.props;
+
+        //     let textSizeCalc = textSize;
+        //     if (!textSize) {
+        //         textSizeCalc = this.state.parentTextSize;
+        //     }
+        //     // Get line height data since container width is now fixed
+        //     const lineHeight = lineHeightFunc(container);
+        //     const containerHeight = container.clientHeight;
+        //     const currentTextLines = Math.floor(containerHeight / lineHeight);
+        //     const { currentTextSize } = this.state;
+        //     if (currentTextLines > targetLines &&
+        //         currentTextSize > minTextSize) {
+        //         // Need shrink font size
+        //         const ratio = targetLines / currentTextLines;
+        //         let calcTextSize = Math.ceil(currentTextSize * ratio);
+        //         if (lineHeight < calcTextSize) {
+        //             calcTextSize = lineHeight;
+        //         }
+
+        //         const stepAdjust = Math.floor((textSizeCalc - calcTextSize) % textSizeStep);
+        //         const finalTextSize = calcTextSize - stepAdjust;
+        //         this.setState({ currentTextSize: finalTextSize >= minTextSize ? finalTextSize : minTextSize });
+        //     }
+        // }
     }
 
     public componentDidMount() {
         const container = this._getContainer();
         if (container) {
-            const containerParent = container.parentElement;
-            if (containerParent) {
-                if (!this.props.textSize) {
-                    const styles = window.getComputedStyle(containerParent);
-                    const fontSize = cssLenConverter(styles.fontSize, 'px') as string;
-                    const fontSizeNumber = parseInt(fontSize.substring(0, fontSize.indexOf('px')));
-                    this.setState({
-                        currentTextSize: fontSizeNumber,
-                        parentTextSize: fontSizeNumber
-                    });
-                }
-
-                // set the width to 100% to trigger an update
-                this.setState({ elementWidth: '100%' });
-            }
+            // set the width to 100% to trigger an update
+            this.setState({ elementWidth: '100%', currentLineHeight: 'normal' });
         }
     }
 
     private _getContainer() {
         if (this.textContainer) {
-            const container = findDOMNode(this.textContainer) as HTMLParagraphElement;
+            const container = findDOMNode(this.textContainer) as HTMLElement;
             if (container) {
                 return container;
             }
@@ -122,4 +180,7 @@ class AutoFontSize extends React.Component<
     }
 }
 
-export { AutoFontSize };
+export {
+    AutoFontSize,
+    IFontSizeLineHeightMapping
+};
