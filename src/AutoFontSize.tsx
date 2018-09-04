@@ -30,7 +30,7 @@ interface IAutoFontSizeStates {
 class AutoFontSize extends React.Component<
   IAutoFontSizeProps,
   IAutoFontSizeStates
-> {
+  > {
   public static defaultProps: Partial<IAutoFontSizeProps> = {
     textSizeStep: 2,
     targetLines: 1,
@@ -81,7 +81,9 @@ class AutoFontSize extends React.Component<
       const lineHeight = lineHeightFunc(container);
       const containerHeight = container.clientHeight;
       const currentTextLines = Math.floor(containerHeight / lineHeight);
-      if (currentTextLines > targetLines && currentTextLines > minTextSize) {
+
+      // !!!currentTextSize triggers a update anyway to ignore parent container inherit
+      if (!!!currentTextSize || (currentTextLines > targetLines && currentTextLines > minTextSize)) {
         const { fontSizeMapping } = this.props;
         // do auto sizing
         if (fontSizeMapping && fontSizeMapping.length) {
