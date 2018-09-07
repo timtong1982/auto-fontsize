@@ -6,19 +6,26 @@ const distFolder = 'dist';
 
 module.exports = {
     mode: 'development',
-    entry: { demo: './demo/bootstrap.tsx' },
+    entry: {
+        demo: [
+            'webpack/hot/dev-server',
+            'webpack-dev-server/client?http://localhost:8011',
+            './demo/bootstrap.tsx']
+    },
     output: {
         path: path.resolve(__dirname, distFolder),
+        publicPath: '/',
         filename: 'autofontsize.js',
         library: 'AutoFontSize',
         libraryTarget: 'umd'
     },
     devtool: 'source-map',
     devServer: {
-        contentBase: path.join(__dirname, distFolder),
+        contentBase: '/',
         compress: true,
         port: 8011,
-        hot: true
+        hot: true,
+        inline: false
     },
     module: {
         rules: [
