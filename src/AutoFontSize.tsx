@@ -151,12 +151,14 @@ class AutoFontSize extends React.Component<
             this.setState({ currentTextSize: nextFontSize });
           }
         }
-      } else if (ellipsisOverflow) {
-        const nextContainerHeight = lineHeight * targetLines;
-        if (nextContainerHeight != limitContainerHeight) {
-          this.setState({ limitContainerHeight: lineHeight * targetLines });
-        }
 
+        if (ellipsisOverflow) {
+          const nextContainerHeight = lineHeight * targetLines;
+          if (nextContainerHeight != limitContainerHeight) {
+            this.setState({ limitContainerHeight: lineHeight * targetLines });
+          }
+        }
+      } else {
         if (container.scrollHeight > container.clientHeight) {
           const { currentText } = this.state;
           let lastCutIndex = currentText.lastIndexOf(' ');
@@ -186,7 +188,7 @@ class AutoFontSize extends React.Component<
         }
       }
       // set the width to 100% to trigger an update
-      this.setState({ elementWidth: "100%", currentLineHeight: "normal" });
+      this.setState({ elementWidth: "100%" });
     }
   }
 
