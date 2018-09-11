@@ -22,6 +22,7 @@ This React component is used for limit text in the certain line(s) by shrink the
 | tetextSizeStepxt  | number                        | True     | 2         | Decrease step of font size when auto sizing                                     |
 | targetLines       | number                        | True     | 1         | Target maximum lines when auto sizing                                           |
 | targetElementType | 'div' or 'p' or 'span'        | True     | 'div'     | Target container to put the auto sizing text                                    |
+| ellipsisOverflow  | boolean                       | True     | false     | Show ellipsis ... when text is overflow                                         |
 
 ### IFontSizeLineHeightMapping
 
