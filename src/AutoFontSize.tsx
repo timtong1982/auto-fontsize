@@ -19,12 +19,15 @@ interface IAutoFontSizeProps {
   textSizeStep?: number;
   targetLines?: number;
   targetElementType?: "div" | "p" | "span";
+  ellipsisOverflow?: boolean;
 }
 
 interface IAutoFontSizeStates {
+  currentText: string;
   currentTextSize: number;
   currentLineHeight: number | string | "normal";
   elementWidth: number | string;
+  limitContainerHeight: number | string | null;
 }
 
 class AutoFontSize extends React.Component<
@@ -36,7 +39,8 @@ class AutoFontSize extends React.Component<
     targetLines: 1,
     minTextSize: 2,
     lineHeightRatio: "normal",
-    targetElementType: "div"
+    targetElementType: "div",
+    ellipsisOverflow: false
   };
 
   private textContainer: HTMLElement | null = null;
@@ -46,13 +50,15 @@ class AutoFontSize extends React.Component<
     this.state = {
       currentTextSize: props.textSize,
       currentLineHeight: 0,
-      elementWidth: 0
+      elementWidth: 0,
+      limitContainerHeight: null,
+      currentText: props.text
     };
   }
 
   public render() {
-    const { text, targetElementType } = this.props;
-    const { currentTextSize, currentLineHeight, elementWidth } = this.state;
+    const { targetElementType, text, ellipsisOverflow } = this.props;
+    const { currentTextSize, currentLineHeight, elementWidth, limitContainerHeight, currentText } = this.state;
 
     const cacledStyle: React.CSSProperties = {
       fontSize: currentTextSize,
@@ -60,40 +66,43 @@ class AutoFontSize extends React.Component<
       width: elementWidth
     };
 
+    if (limitContainerHeight) {
+      cacledStyle.height = limitContainerHeight;
+    }
+
     const TargetWrapper = targetElementType;
+
+    const ellipsis = ellipsisOverflow && currentText !== text ? ' ...' : null;
 
     return (
       <TargetWrapper
         ref={(_: HTMLElement) => (this.textContainer = _)}
         style={cacledStyle}
       >
-        {text}
+        {currentText}{ellipsis}
       </TargetWrapper>
     );
   }
 
-  public componentDidUpdate(): void {
+  public componentDidUpdate(preProps: IAutoFontSizeProps, preStates: IAutoFontSizeStates): void {
+    // console.log(preStates);
+    // console.log(this.state);
     const container = this._getContainer();
     if (container) {
-      const { targetLines, minTextSize } = this.props;
-      const { currentTextSize } = this.state;
+      const { targetLines, minTextSize, ellipsisOverflow } = this.props;
+      const { currentTextSize, limitContainerHeight } = this.state;
 
       const lineHeight = lineHeightFunc(container);
       const containerHeight = container.clientHeight;
       const currentTextLines = Math.floor(containerHeight / lineHeight);
 
       // !!!currentTextSize triggers a update anyway to ignore parent container inherit
-      if (!!!currentTextSize || (currentTextLines > targetLines && currentTextLines > minTextSize)) {
-        const { fontSizeMapping } = this.props;
-        // do auto sizing
-        if (fontSizeMapping && fontSizeMapping.length) {
-          // Using the mapping setting to set the font size steppings
-          // sort the mapping
-          const sortedMapping = fontSizeMapping.sort(
-            (a: IFontSizeLineHeightMapping, b: IFontSizeLineHeightMapping) =>
-              b.fontSize - a.fontSize
-          );
+      if (!!!currentTextSize || (currentTextLines > targetLines && currentTextSize > minTextSize)) {
+        const sortedMapping = this._getSortedMappingSetting();
 
+        // do auto sizing
+        if (sortedMapping && sortedMapping.length) {
+          // Using the mapping setting to set the font size steppings
           // search the next value to use
           if (!!!currentTextSize) {
             // First hit, use the max value from sorted mapping
@@ -121,11 +130,7 @@ class AutoFontSize extends React.Component<
             let fontSizeInNumber = textSize;
             if (!!!fontSizeInNumber) {
               // Get the text size from current container
-              const containerFontSize = window.getComputedStyle(container)
-                .fontSize;
-              fontSizeInNumber = parseInt(
-                cssLenConverter(containerFontSize, "px")
-              );
+              fontSizeInNumber = this._getCssFontSize(container);
               if (fontSizeInNumber < minTextSize) {
                 fontSizeInNumber = minTextSize;
               }
@@ -146,6 +151,22 @@ class AutoFontSize extends React.Component<
             this.setState({ currentTextSize: nextFontSize });
           }
         }
+      } else if (ellipsisOverflow) {
+        const nextContainerHeight = lineHeight * targetLines;
+        if (nextContainerHeight != limitContainerHeight) {
+          this.setState({ limitContainerHeight: lineHeight * targetLines });
+        }
+
+        if (container.scrollHeight > container.clientHeight) {
+          const { currentText } = this.state;
+          let lastCutIndex = currentText.lastIndexOf(' ');
+          if (lastCutIndex == -1) {
+            lastCutIndex = currentText.length - 1;
+          }
+
+          const nextText = currentText.substring(0, lastCutIndex);
+          this.setState({ currentText: nextText });
+        }
       }
     }
   }
@@ -153,6 +174,17 @@ class AutoFontSize extends React.Component<
   public componentDidMount() {
     const container = this._getContainer();
     if (container) {
+      // honor settings max value anyway
+      const sortedMapping = this._getSortedMappingSetting();
+      if (sortedMapping && sortedMapping.length) {
+        const setting = sortedMapping[0];
+        this.setState({ currentLineHeight: setting.lineHeight, currentTextSize: setting.fontSize });
+      } else {
+        const { textSize, lineHeightRatio, minTextSize } = this.props;
+        if (textSize && textSize >= minTextSize) {
+          this.setState({ currentTextSize: textSize, currentLineHeight: lineHeightRatio });
+        }
+      }
       // set the width to 100% to trigger an update
       this.setState({ elementWidth: "100%", currentLineHeight: "normal" });
     }
@@ -164,6 +196,32 @@ class AutoFontSize extends React.Component<
       if (container) {
         return container;
       }
+    }
+
+    return 0;
+  }
+
+  private _getCssFontSize(container: HTMLElement) {
+    const containerFontSize = window.getComputedStyle(container).fontSize;
+    const fontSizeInNumber = parseInt(cssLenConverter(containerFontSize, "px"));
+    if (fontSizeInNumber) {
+      return fontSizeInNumber;
+    }
+
+    return 0;
+  }
+
+  private _getSortedMappingSetting() {
+    const { fontSizeMapping } = this.props;
+    if (fontSizeMapping && fontSizeMapping.length) {
+      // Using the mapping setting to set the font size steppings
+      // sort the mapping
+      const sortedMapping = fontSizeMapping.sort(
+        (a: IFontSizeLineHeightMapping, b: IFontSizeLineHeightMapping) =>
+          b.fontSize - a.fontSize
+      );
+
+      return sortedMapping;
     }
 
     return null;
