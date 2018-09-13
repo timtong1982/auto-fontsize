@@ -84,9 +84,13 @@ class AutoFontSize extends React.Component<
     );
   }
 
+  public componentWillReceiveProps(nextProps: IAutoFontSizeProps) {
+    if (nextProps.text !== this.props.text) {
+      this.setState({ currentText: nextProps.text });
+    }
+  }
+
   public componentDidUpdate(preProps: IAutoFontSizeProps, preStates: IAutoFontSizeStates): void {
-    // console.log(preStates);
-    // console.log(this.state);
     const container = this._getContainer();
     if (container) {
       const { targetLines, minTextSize, ellipsisOverflow } = this.props;
@@ -159,10 +163,10 @@ class AutoFontSize extends React.Component<
           }
         }
       } else {
-        if (container.scrollHeight > container.clientHeight) {
+        if (ellipsisOverflow && (container.scrollHeight - 1 > container.clientHeight)) {
           const { currentText } = this.state;
           let lastCutIndex = currentText.lastIndexOf(' ');
-          if (lastCutIndex == -1) {
+          if (lastCutIndex === -1) {
             lastCutIndex = currentText.length - 1;
           }
 
