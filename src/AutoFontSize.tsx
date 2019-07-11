@@ -100,7 +100,7 @@ class AutoFontSize extends React.Component<
       const containerHeight = container.clientHeight;
       const currentTextLines = Math.floor(containerHeight / lineHeight);
 
-      if (!!currentTextSize && currentTextLines < targetLines && text === preProps.text) {
+      if (!!currentTextSize && currentTextLines <= targetLines && text === preProps.text) {
         // resize goal meet
         return;
       }
