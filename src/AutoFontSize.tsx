@@ -1,9 +1,11 @@
 import * as React from "react";
 import { findDOMNode } from "react-dom";
 
-const lineHeightFunc = require("line-height");
-const convertLength = require("convert-css-length");
-const cssLenConverter = convertLength();
+const lineHeightFunc: any = require("line-height");
+const convertLength: any = require("convert-css-length");
+const cssLenConverter: any = convertLength();
+
+type TargetElementType = "div" | "p" | "span" | "h1" | "h2" | "h3" | "h4" | "header";
 
 interface IFontSizeLineHeightMapping {
   fontSize: number;
@@ -18,7 +20,7 @@ interface IAutoFontSizeProps {
   lineHeightRatio?: number | string | "normal";
   textSizeStep?: number;
   targetLines?: number;
-  targetElementType?: "div" | "p" | "span" | "h1" | "h2" | "h3" | "h4" | "header";
+  targetElementType?: TargetElementType;
   ellipsisOverflow?: boolean;
 }
 
@@ -70,9 +72,9 @@ class AutoFontSize extends React.Component<
       cacledStyle.height = limitContainerHeight;
     }
 
-    const TargetWrapper = targetElementType;
+    const TargetWrapper: TargetElementType = targetElementType;
 
-    const ellipsis = ellipsisOverflow && currentText !== text ? " ..." : null;
+    const ellipsis: string | null = ellipsisOverflow && currentText !== text ? "..." : null;
 
     return (
       <TargetWrapper
@@ -91,18 +93,18 @@ class AutoFontSize extends React.Component<
   }
 
   public componentDidUpdate(_preProps: IAutoFontSizeProps, _preStates: IAutoFontSizeStates): void {
-    const container = this._getContainer();
+    const container: 0 | HTMLElement = this._getContainer();
     if (container) {
       const { targetLines, minTextSize, ellipsisOverflow, text } = this.props;
       const { currentTextSize, limitContainerHeight } = this.state;
 
-      const lineHeight = lineHeightFunc(container);
-      const containerHeight = container.clientHeight;
-      const currentTextLines = Math.floor(containerHeight / lineHeight);
+      const lineHeight: number = lineHeightFunc(container);
+      const containerHeight: number = container.clientHeight;
+      const currentTextLines: number = Math.floor(containerHeight / lineHeight);
 
       // !!!currentTextSize triggers a update anyway to ignore parent container inherit
       if (!!!currentTextSize || (currentTextLines > targetLines && currentTextSize > minTextSize)) {
-        const sortedMapping = this._getSortedMappingSetting();
+        const sortedMapping: IFontSizeLineHeightMapping[] = this._getSortedMappingSetting();
 
         // do auto sizing
         if (sortedMapping && sortedMapping.length) {
@@ -110,14 +112,14 @@ class AutoFontSize extends React.Component<
           // search the next value to use
           if (!!!currentTextSize) {
             // first hit, use the max value from sorted mapping
-            const setting = sortedMapping[0];
+            const setting: IFontSizeLineHeightMapping = sortedMapping[0];
             this.setState({
               currentTextSize: setting.fontSize,
               currentLineHeight: setting.lineHeight
             });
           } else {
             // find the next smaller value in fontSizeMapping
-            const settings = sortedMapping.filter(
+            const settings: IFontSizeLineHeightMapping[] = sortedMapping.filter(
               (_: IFontSizeLineHeightMapping) => _.fontSize < currentTextSize
             );
             if (settings && settings.length) {
@@ -131,7 +133,7 @@ class AutoFontSize extends React.Component<
           // full auto sizing
           if (!!!currentTextSize) {
             const { textSize, lineHeightRatio } = this.props;
-            let fontSizeInNumber = textSize;
+            let fontSizeInNumber: number = textSize;
             if (!!!fontSizeInNumber) {
               // get the text size from current container
               fontSizeInNumber = this._getCssFontSize(container);
@@ -147,7 +149,7 @@ class AutoFontSize extends React.Component<
           } else {
             const { textSizeStep } = this.props;
             // step setting the font size
-            let nextFontSize = currentTextSize - textSizeStep;
+            let nextFontSize: number = currentTextSize - textSizeStep;
             if (nextFontSize < minTextSize) {
               nextFontSize = minTextSize;
             }
@@ -157,20 +159,26 @@ class AutoFontSize extends React.Component<
         }
 
         if (ellipsisOverflow) {
-          const nextContainerHeight = lineHeight * targetLines;
+          const nextContainerHeight: number = lineHeight * targetLines;
           if (nextContainerHeight !== limitContainerHeight) {
             this.setState({ limitContainerHeight: lineHeight * targetLines });
           }
         }
       } else {
         if (ellipsisOverflow && (container.scrollHeight - 1 > container.clientHeight)) {
-          const { currentText } = this.state;
-          let lastCutIndex = currentText.lastIndexOf(" ");
-          if (lastCutIndex === -1) {
+          const { currentText, currentTextSize } = this.state;
+          const { targetLines } = this.props;
+          const containerWidth: number = container.clientWidth;
+          const charPerLine: number = containerWidth / currentTextSize;
+          const allowedChars: number = targetLines * charPerLine;
+
+
+          let lastCutIndex: number = currentText.lastIndexOf(" ");
+          if (lastCutIndex === -1 || lastCutIndex < allowedChars * 0.9) {
             lastCutIndex = currentText.length - 1;
           }
 
-          const nextText = currentText.substring(0, lastCutIndex);
+          const nextText: string = currentText.substring(0, lastCutIndex);
           this.setState({ currentText: nextText });
         }
       }
@@ -178,12 +186,12 @@ class AutoFontSize extends React.Component<
   }
 
   public componentDidMount(): void {
-    const container = this._getContainer();
+    const container: 0 | HTMLElement = this._getContainer();
     if (container) {
       // honor settings max value anyway
-      const sortedMapping = this._getSortedMappingSetting();
+      const sortedMapping: IFontSizeLineHeightMapping[] = this._getSortedMappingSetting();
       if (sortedMapping && sortedMapping.length) {
-        const setting = sortedMapping[0];
+        const setting: IFontSizeLineHeightMapping = sortedMapping[0];
         this.setState({ currentLineHeight: setting.lineHeight, currentTextSize: setting.fontSize });
       } else {
         const { textSize, lineHeightRatio, minTextSize } = this.props;
@@ -198,7 +206,7 @@ class AutoFontSize extends React.Component<
 
   private _getContainer(): HTMLElement | 0 {
     if (this.textContainer) {
-      const container = findDOMNode(this.textContainer) as HTMLElement;
+      const container: HTMLElement = findDOMNode(this.textContainer) as HTMLElement;
       if (container) {
         return container;
       }
@@ -208,8 +216,8 @@ class AutoFontSize extends React.Component<
   }
 
   private _getCssFontSize(container: HTMLElement): number {
-    const containerFontSize = window.getComputedStyle(container).fontSize;
-    const fontSizeInNumber = parseInt(cssLenConverter(containerFontSize, "px"));
+    const containerFontSize: string = window.getComputedStyle(container).fontSize;
+    const fontSizeInNumber: number = parseInt(cssLenConverter(containerFontSize, "px"), undefined);
     if (fontSizeInNumber) {
       return fontSizeInNumber;
     }
@@ -222,7 +230,7 @@ class AutoFontSize extends React.Component<
     if (fontSizeMapping && fontSizeMapping.length) {
       // using the mapping setting to set the font size steppings
       // sort the mapping
-      const sortedMapping = fontSizeMapping.sort(
+      const sortedMapping: IFontSizeLineHeightMapping[] = fontSizeMapping.sort(
         (a: IFontSizeLineHeightMapping, b: IFontSizeLineHeightMapping) =>
           b.fontSize - a.fontSize
       );
