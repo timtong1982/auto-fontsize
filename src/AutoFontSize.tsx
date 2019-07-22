@@ -18,7 +18,7 @@ interface IAutoFontSizeProps {
   lineHeightRatio?: number | string | "normal";
   textSizeStep?: number;
   targetLines?: number;
-  targetElementType?: "div" | "p" | "span";
+  targetElementType?: "div" | "p" | "span" | "h1" | "h2" | "h3" | "h4" | "header";
   ellipsisOverflow?: boolean;
 }
 
@@ -90,7 +90,7 @@ class AutoFontSize extends React.Component<
     }
   }
 
-  public componentDidUpdate(preProps: IAutoFontSizeProps, _preStates: IAutoFontSizeStates): void {
+  public componentDidUpdate(_preProps: IAutoFontSizeProps, _preStates: IAutoFontSizeStates): void {
     const container = this._getContainer();
     if (container) {
       const { targetLines, minTextSize, ellipsisOverflow, text } = this.props;
@@ -99,11 +99,6 @@ class AutoFontSize extends React.Component<
       const lineHeight = lineHeightFunc(container);
       const containerHeight = container.clientHeight;
       const currentTextLines = Math.floor(containerHeight / lineHeight);
-
-      if (!!currentTextSize && currentTextLines <= targetLines && text === preProps.text) {
-        // resize goal meet
-        return;
-      }
 
       // !!!currentTextSize triggers a update anyway to ignore parent container inherit
       if (!!!currentTextSize || (currentTextLines > targetLines && currentTextSize > minTextSize)) {
