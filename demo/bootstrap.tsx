@@ -93,7 +93,16 @@ const renderComponent = () => {
                     targetElementType={"header"}
                 />
             </div>
-
+            <br />
+            <div style={{ width: 300, fontSize: 32, lineHeight: "normal", border: "1px solid red" }}>
+                <AutoFontSize
+                    text="11. The quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dogThe quick brown fox jumps over the lazy dog"
+                    fontSizeMapping={[{ fontSize: 16, lineHeight: "19px" }]}
+                    textSizeStep={2}
+                    targetLines={2}
+                    ellipsisOverflow
+                />
+            </div>
         </React.Fragment>,
         document.getElementById("mounthere")
     );
