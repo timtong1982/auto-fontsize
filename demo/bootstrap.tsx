@@ -1,12 +1,12 @@
-import * as ReactDOM from 'react-dom';
-import * as React from 'react';
-import { AutoFontSize } from '../src/AutoFontSize'
+import * as ReactDOM from "react-dom";
+import * as React from "react";
+import { AutoFontSize } from "../src/AutoFontSize";
 
 const renderComponent = () => {
-    console.log('rendering...');
+    console.log("rendering...");
     ReactDOM.render(
         <React.Fragment>
-            <div style={{ width: 200, fontSize: 32, lineHeight: 'normal', border: '1px solid red' }}>
+            {/* <div style={{ width: 200, fontSize: 32, lineHeight: 'normal', border: '1px solid red' }}>
                 <AutoFontSize
                     text="1. The quick brown fox jumps over the lazy dog"
                     textSizeStep={2}
@@ -72,22 +72,23 @@ const renderComponent = () => {
                     targetLines={2}
                     ellipsisOverflow
                 />
-            </div>
-            <div style={{ width: 400, fontSize: 32, lineHeight: 'normal', border: '1px solid red' }}>
+            </div> */}
+            <div style={{ width: 400, fontSize: 32, lineHeight: "normal", border: "1px solid red" }}>
                 <AutoFontSize
                     text="9.敏捷的棕色狐狸跳过了懒狗敏捷的棕色狐狸跳过了懒狗敏捷的棕色狐狸跳过了懒狗敏捷的棕色狐狸跳过了懒狗敏捷的棕色狐狸跳过了懒狗敏捷的棕色狐狸跳过了懒狗"
-                    fontSizeMapping={[{ fontSize: 16, lineHeight: '19px' }]}
+                    fontSizeMapping={[{ fontSize: 16, lineHeight: "19px" }]}
                     targetLines={2}
                     ellipsisOverflow
+                    targetElementType={"header"}
                 />
             </div>
         </React.Fragment>,
-        document.getElementById('mounthere')
+        document.getElementById("mounthere")
     );
 };
 
 renderComponent();
 
 if (module.hot) {
-    module.hot.accept('../src//AutoFontSize.tsx', () => renderComponent());
+    module.hot.accept("../src//AutoFontSize.tsx", () => renderComponent());
 }
