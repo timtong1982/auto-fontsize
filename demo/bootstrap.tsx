@@ -6,7 +6,7 @@ const renderComponent = () => {
     console.log("rendering...");
     ReactDOM.render(
         <React.Fragment>
-            {/* <div style={{ width: 200, fontSize: 32, lineHeight: "normal", border: "1px solid red" }}>
+            <div style={{ width: 200, fontSize: 32, lineHeight: "normal", border: "1px solid red" }}>
                 <AutoFontSize
                     text="1. The quick brown fox jumps over the lazy dog"
                     textSizeStep={2}
@@ -82,7 +82,8 @@ const renderComponent = () => {
                     ellipsisOverflow
                     targetElementType={"header"}
                 />
-            </div> */}
+            </div>
+            <br />
             <div style={{ width: 400, fontSize: 32, lineHeight: "normal", border: "1px solid red" }}>
                 <AutoFontSize
                     text="10.敏捷的棕色狐狸跳过了懒狗敏捷的棕色狐狸跳过 了懒狗敏捷的棕色狐狸跳过了懒狗敏捷的棕色狐狸跳过了懒狗敏捷的棕色狐狸跳过了懒狗敏捷的棕色狐狸跳过了懒狗"
