@@ -1,1 +1,1 @@
-export { AutoFontSize } from "./AutoFontSize";
+export * from "./AutoFontSize";
