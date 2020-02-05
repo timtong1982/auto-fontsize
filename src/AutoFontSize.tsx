@@ -279,4 +279,4 @@ class AutoFontSize extends React.Component<
   }
 }
 
-export { AutoFontSize, IFontSizeLineHeightMapping };
+export { AutoFontSize, IAutoFontSizeProps, IFontSizeLineHeightMapping };
