@@ -1,7 +1,5 @@
 const path = require('path');
-const webPack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {TsConfigPathsPlugin} = require('awesome-typescript-loader')
 
 const distFolder = 'dist';
 
