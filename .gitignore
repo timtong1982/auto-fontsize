@@ -62,3 +62,6 @@ typings/
 
 # TypeScript build output
 lib/
+
+# Webpack output
+dist/
