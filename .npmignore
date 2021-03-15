@@ -1,6 +1,7 @@
 demo/
 node_modules/
 src/
+dist/
 .gitignore
 .tsconfig.json
 webpackconfig.js
