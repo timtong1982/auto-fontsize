@@ -1,23 +1,15 @@
 const path = require('path');
-const webPack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const distFolder = 'dist';
 
 module.exports = {
     mode: 'development',
-    entry: {
-        demo: [
-            'webpack/hot/dev-server',
-            'webpack-dev-server/client?http://localhost:8011',
-            './demo/bootstrap.tsx']
-    },
+    entry: './demo/bootstrap.tsx',
     output: {
         path: path.resolve(__dirname, distFolder),
         publicPath: '/',
         filename: 'autofontsize.js',
-        library: 'AutoFontSize',
-        libraryTarget: 'umd'
     },
     devtool: 'source-map',
     devServer: {
@@ -31,7 +23,10 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: 'awesome-typescript-loader',
+                loader: 'ts-loader',
+                options:{
+                    configFile: path.resolve(__dirname, 'tsconfig.json')
+                },
                 exclude: /node_modules/
             },
             {
@@ -42,14 +37,9 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js']
-    },
-    externals: {
-        react: 'React',
-        'react-dom': 'ReactDOM'
+        extensions: ['.tsx', '.ts', '.js'],
     },
     plugins: [
-        new webPack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             template: './demo/template.html'
         })

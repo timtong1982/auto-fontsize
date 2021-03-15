@@ -2,7 +2,7 @@ import * as React from "react";
 import { findDOMNode } from "react-dom";
 
 const lineHeightFunc: any = require("line-height");
-const convertLength: any = require("convert-css-length");
+const convertLength: any = require("convert-css-length").default;
 const cssLenConverter: any = convertLength();
 
 type TargetElementType =
