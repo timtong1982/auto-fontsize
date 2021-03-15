@@ -2,8 +2,14 @@ language: node_js
 node_js:
   - "stable"
 cache:
+  npm: false
   directories:
-    - "node_modules"
+    - "~/.pnpm-store"
+before_install:
+  - curl -L https://unpkg.com/@pnpm/self-installer | node
+  - pnpm config set store-dir ~/.pnpm-store
+install:
+  - pnpm install
 script:
   - "npm run build"
   # - "npm run test"
